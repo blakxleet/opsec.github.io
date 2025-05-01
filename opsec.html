@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpSec Master - Guide complet de la sécurité opérationnelle</title>
+    <style>
+        :root {
+            --primary: #0a192f;
+            --secondary: #172a45;
+            --accent: #64ffda;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --transition: all 0.3s ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Loader */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--secondary);
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        header {
+            background-color: rgba(10, 25, 47, 0.9);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            color: var(--accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            margin-left: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 2px;
+            background-color: var(--accent);
+            margin: 5px;
+            transition: var(--transition);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .hero h2 {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--accent);
+            padding: 0.8rem 1.5rem;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            font-size: 1rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -10px rgba(100, 255, 218, 0.3);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* Sections */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 70%;
+            height: 2px;
+            background-color: var(--accent);
+        }
+
+        /* About OpSec */
+        .about-content {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .about-image {
+            position: relative;
+            height: 100%;
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+            z-index: -1;
+            transition: var(--transition);
+        }
+
+        .about-image:hover::before {
+            top: -10px;
+            left: -10px;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            filter: grayscale(100%) contrast(1);
+            transition: var(--transition);
+        }
+
+        .about-image:hover img {
+            filter: none;
+        }
+
+        /* Types of OpSec */
+        .types-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .type-card {
+            background-color: var(--secondary);
+            padding: 2rem;
+            border-radius: 4px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .type-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px -15px rgba(2, 12, 27, 0.7);
+        }
+
+        .type-card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .type-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .type-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 0;
+            background-color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .type-card:hover::before {
+            height: 100%;
+        }
+
+        /* Best Practices */
+        .practices-container {
+            margin-top: 3rem;
+        }
+
+        .practice-item {
+            margin-bottom: 2rem;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .practice-item::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .practice-item h3 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .practice-item p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Resources */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .resource-card {
+            background-color: var(--secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -10px rgba(2, 12, 27, 0.7);
+        }
+
+        .resource-image {
+            height: 150px;
+            overflow: hidden;
+        }
+
+        .resource-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .resource-card:hover .resource-image img {
+            transform: scale(1.1);
+        }
+
+        .resource-content {
+            padding: 1.5rem;
+        }
+
+        .resource-content h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .resource-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .resource-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .resource-link:hover {
+            color: var(--text-primary);
+        }
+
+        .resource-link svg {
+            margin-left: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .resource-link:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* FAQ */
+        .faq-container {
+            max-width: 800px;
+            margin: 3rem auto 0;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border: 1px solid var(--secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            background-color: var(--secondary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .faq-question:hover {
+            background-color: rgba(23, 42, 69, 0.8);
+        }
+
+        .faq-question h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .faq-question span {
+            color: var(--accent);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .faq-answer p {
+            padding: 1.5rem 0;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-question {
+            background-color: rgba(23, 42, 69, 0.8);
+        }
+
+        .faq-item.active .faq-question span {
+            transform: rotate(45deg);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary);
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+
+        .footer-column h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(136, 146, 176, 0.2);
+        }
+
+        .footer-bottom p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: var(--accent);
+            margin: 0 0.5rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -10px rgba(100, 255, 218, 0.5);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background-color: var(--secondary);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition);
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links li {
+                margin: 1.5rem 0;
+            }
+
+            .hamburger {
+                display: block;
+                z-index: 1000;
+            }
+
+            .hamburger.active div:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+
+            .hamburger.active div:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active div:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+            .hero {
+                padding-top: 6rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .about-image {
+                margin-top: 2rem;
+            }
+
+            section {
+                padding: 4rem 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+
+        .delay-4 {
+            animation-delay: 0.8s;
+        }
+
+        /* Interactive Elements */
+        .interactive-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interactive-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .interactive-btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted var(--accent);
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--secondary);
+            color: var(--text-primary);
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .tooltip .tooltiptext::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--secondary) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader-container" id="loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <a href="#" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L3 7L12 12L21 7L12 2Z" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 17L12 22L21 17" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 12L12 17L21 12" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>OpSec Master</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#about">Qu'est-ce que l'OpSec?</a></li>
+                <li><a href="#types">Types d'OpSec</a></li>
+                <li><a href="#practices">Bonnes pratiques</a></li>
+                <li><a href="#resources">Ressources</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+            <div class="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <h1 class="delay-1">Maîtrisez votre <span class="tooltip">OpSec<span class="tooltiptext">Sécurité Opérationnelle - Protéger vos informations sensibles</span></span></h1>
+            <h2 class="delay-2">Guide complet de la sécurité opérationnelle</h2>
+            <p class="delay-3">Découvrez comment protéger efficacement vos informations sensibles contre les menaces numériques et physiques grâce à des stratégies éprouvées d'OpSec.</p>
+            <a href="#about" class="btn delay-4 interactive-btn">Commencer</a>
+        </div>
+    </section>
+
+    <!-- About OpSec -->
+    <section id="about">
+        <h2 class="section-title fade-in">Qu'est-ce que l'OpSec?</h2>
+        <div class="about-content">
+            <div class="about-text fade-in delay-1">
+                <p>L'OpSec (Sécurité Opérationnelle) est un processus de gestion des risques qui protège les informations sensibles contre les menaces potentielles. Initialement développée par les militaires, cette méthodologie est maintenant largement utilisée dans les secteurs privé et public.</p>
+                <p>L'OpSec identifie les informations critiques, analyse les menaces et les vulnérabilités, évalue les risques et met en œuvre des contre-mesures appropriées. C'est une approche proactive plutôt que réactive de la sécurité.</p>
+                <p>Dans notre monde hyper-connecté, où les données sont constamment collectées et analysées, une bonne OpSec est essentielle pour les individus comme pour les organisations qui souhaitent protéger leur vie privée et leurs actifs informationnels.</p>
+            </div>
+            <div class="about-image fade-in delay-2">
+                <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="OpSec Concept">
+            </div>
+        </div>
+    </section>
+
+    <!-- Types of OpSec -->
+    <section id="types">
+        <h2 class="section-title fade-in">Types d'OpSec</h2>
+        <div class="types-container">
+            <div class="type-card fade-in delay-1">
+                <h3>OpSec Personnelle</h3>
+                <p>Protection des informations personnelles contre le vol d'identité, la surveillance et autres menaces à la vie privée. Inclut la gestion des empreintes numériques, la sécurité des appareils et la protection des communications.</p>
+            </div>
+            <div class="type-card fade-in delay-2">
+                <h3>OpSec Organisationnelle</h3>
+                <p>Protection des informations sensibles d'une entreprise ou organisation contre l'espionnage industriel, les fuites de données et les cyberattaques. Comprend la gestion des accès, la sécurité physique et la formation des employés.</p>
+            </div>
+            <div class="type-card fade-in delay-3">
+                <h3>OpSec Militaire/Gouvernementale</h3>
+                <p>Protection des informations classifiées et des opérations sensibles. Inclut le contrôle des communications, la sécurité des installations et la protection contre l'espionnage étranger.</p>
+            </div>
+            <div class="type-card fade-in delay-4">
+                <h3>OpSec Numérique</h3>
+                <p>Protection spécifique contre les menaces en ligne comme le hacking, le phishing et la surveillance numérique. Comprend l'utilisation de VPN, le chiffrement et les bonnes pratiques de cybersécurité.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Practices -->
+    <section id="practices">
+        <h2 class="section-title fade-in">Comment être bien OpSec</h2>
+        <div class="practices-container">
+            <div class="practice-item fade-in delay-1">
+                <h3>Analyse des informations critiques</h3>
+                <p>Identifiez quelles informations pourraient être utiles à un adversaire et comment elles pourraient être obtenues. Posez-vous : "Si ces informations tombaient entre de mauvaises mains, quel serait l'impact?"</p>
+            </div>
+            <div class="practice-item fade-in delay-2">
+                <h3>Gestion des empreintes numériques</h3>
+                <p>Réduisez votre présence en ligne, utilisez des pseudonymes lorsque approprié, et soyez conscient des informations que vous partagez sur les réseaux sociaux et autres plateformes.</p>
+            </div>
+            <div class="practice-item fade-in delay-3">
+                <h3>Sécurité des communications</h3>
+                <p>Utilisez le chiffrement de bout en bout pour les messages et emails sensibles. Évitez de discuter d'informations sensibles sur des canaux non sécurisés.</p>
+            </div>
+            <div class="practice-item fade-in delay-4">
+                <h3>Contrôle d'accès physique</h3>
+                <p>Protégez vos appareils avec des mots de passe forts et le chiffrement. Soyez conscient de votre environnement et des personnes qui pourraient accéder physiquement à vos informations.</p>
+            </div>
+            <div class="practice-item fade-in delay-1">
+                <h3>Conscience situationnelle</h3>
+                <p>Soyez toujours conscient de votre environnement, tant physique que numérique. Identifiez les comportements suspects ou les anomalies qui pourraient indiquer une tentative de compromission.</p>
+            </div>
+            <div class="practice-item fade-in delay-2">
+                <h3>Planification de la continuité</h3>
+                <p>Ayez un plan pour faire face aux compromissions potentielles, y compris la sauvegarde des données et les protocoles de réponse aux incidents.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources -->
+    <section id="resources">
+        <h2 class="section-title fade-in">Ressources OpSec</h2>
+        <div class="resources-grid">
+            <div class="resource-card fade-in delay-1">
+                <div class="resource-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Tor Project">
+                </div>
+                <div class="resource-content">
+                    <h3>Tor Project</h3>
+                    <p>Naviguez anonymement sur internet avec le réseau Tor qui protège contre l'analyse du trafic.</p>
+                    <a href="https://www.torproject.org/" class="resource-link" target="_blank">Visiter
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 5L19 12L12 19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="resource-card fade-in delay-2">
+                <div class="resource-image">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Signal">
+                </div>
+                <div class="resource-content">
+                    <h3>Signal</h3>
+                    <p>Application de messagerie chiffrée de bout en bout pour des communications sécurisées.</p>
+                    <a href="https://signal.org/" class="resource-link" target="_blank">Visiter
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 5L19 12L12 19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="resource-card fade-in delay-3">
+                <div class="resource-image">
+                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="KeePass">
+                </div>
+                <div class="resource-content">
+                    <h3>KeePass</h3>
+                    <p>Gestionnaire de mots de passe open source et local pour stocker en toute sécurité vos identifiants.</p>
+                    <a href="https://keepass.info/" class="resource-link" target="_blank">Visiter
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 5L19 12L12 19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="resource-card fade-in delay-4">
+                <div class="resource-image">
+                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="ProtonMail">
+                </div>
+                <div class="resource-content">
+                    <h3>ProtonMail</h3>
+                    <p>Service de messagerie électronique chiffré basé en Suisse pour une communication privée.</p>
+                    <a href="https://protonmail.com/" class="resource-link" target="_blank">Visiter
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 5L19 12L12 19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="resource-card fade-in delay-1">
+                <div class="resource-image">
+                    <img src="https://images.unsplash.com/photo-1614064548237-096f735f344f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Tails OS">
+                </div>
+                <div class="resource-content">
+                    <h3>Tails OS</h3>
+                    <p>Système d'exploitation live qui vous permet d'utiliser un ordinateur sans laisser de traces.</p>
+                    <a href="https://tails.boum.org/" class="resource-link" target="_blank">Visiter
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 5L19 12L12 19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="resource-card fade-in delay-2">
+                <div class="resource-image">
+                    <img src="https://images.unsplash.com/photo-1639762681057-408e52192e55?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="EFF">
+                </div>
+                <div class="resource-content">
+                    <h3>Electronic Frontier Foundation</h3>
+                    <p>Organisation de défense des libertés numériques avec de nombreuses ressources sur la vie privée.</p>
+                    <a href="https://www.eff.org/" class="resource-link" target="_blank">Visiter
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 5L19 12L12 19" stroke="#64ffda" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+        <h2 class="section-title fade-in">Questions Fréquentes</h2>
+        <div class="faq-container">
+            <div class="faq-item fade-in delay-1">
+                <div class="faq-question">
+                    <h3>L'OpSec est-elle seulement pour les militaires et les entreprises?</h3>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Non, l'OpSec est importante pour tout le monde. Dans notre monde numérique, chaque individu a des informations à protéger - identité, finances, communications privées. Les principes d'OpSec peuvent être adaptés à différents niveaux de besoin.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in delay-2">
+                <div class="faq-question">
+                    <h3>Est-ce que une bonne OpSec signifie vivre "hors réseau"?</h3>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Pas nécessairement. Une bonne OpSec consiste à trouver un équilibre entre sécurité et praticité. Vous pouvez prendre des mesures significatives pour protéger vos informations tout en participant à la vie moderne. C'est une question de conscience et de choix éclairés.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in delay-3">
+                <div class="faq-question">
+                    <h3>Combien de temps faut-il pour mettre en place une bonne OpSec?</h3>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>L'OpSec est un processus continu plutôt qu'un état final. Vous pouvez commencer par des étapes simples (comme un gestionnaire de mots de passe) et progressivement ajouter des couches de protection. L'important est de commencer et de maintenir de bonnes habitudes.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in delay-4">
+                <div class="faq-question">
+                    <h3>Est-ce que l'OpSec est compatible avec les réseaux sociaux?</h3>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Oui, mais cela nécessite une utilisation consciente. Vous pouvez utiliser les réseaux sociaux tout en limitant les informations personnelles que vous partagez, en ajustant les paramètres de confidentialité et en étant sélectif sur vos connexions.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in delay-1">
+                <div class="faq-question">
+                    <h3>Quelle est la plus grande erreur d'OpSec que les gens commettent?</h3>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>La complaisance. Beaucoup de gens pensent "Je n'ai rien à cacher" ou "Ça ne m'arrivera pas". En réalité, tout le monde a des informations à protéger, et les menaces sont souvent invisibles jusqu'à ce qu'il soit trop tard. La prévention est toujours plus facile que la réparation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>OpSec Master</h3>
+                <p>Votre guide complet pour comprendre et mettre en œuvre la sécurité opérationnelle dans votre vie numérique et physique.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Twitter">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M23 3.00005C22.0424 3.67552 20.9821 4.19216 19.86 4.53005C19.2577 3.83756 18.4573 3.34674 17.567 3.12397C16.6767 2.90121 15.7395 2.95724 14.8821 3.2845C14.0247 3.61176 13.2884 4.19445 12.773 4.95376C12.2575 5.71308 11.9877 6.61238 12 7.53005V8.53005C10.2426 8.57561 8.50127 8.18586 6.93101 7.39549C5.36074 6.60513 4.01032 5.43868 3 4.00005C3 4.00005 -1 13 8 17C5.94053 18.398 3.48716 19.099 1 19C10 24 21 19 21 7.50005C20.9991 7.2215 20.9723 6.94364 20.92 6.67005C21.9406 5.66354 22.6608 4.39276 23 3.00005Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="GitHub">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 19C4 20.5 4 16.5 2 16M16 22V18.13C16.0375 17.6532 15.9731 17.1738 15.811 16.7238C15.6489 16.2738 15.3929 15.8634 15.06 15.52C18.2 15.17 21.5 13.98 21.5 8.52C21.4997 7.12383 20.9627 5.7812 20 4.77C20.4559 3.54851 20.4236 2.19835 19.91 0.999999C19.91 0.999999 18.73 0.649999 16 2.48C13.708 1.85882 11.292 1.85882 9 2.48C6.27 0.649999 5.09 0.999999 5.09 0.999999C4.57638 2.19835 4.54414 3.54851 5 4.77C4.03013 5.7887 3.49252 7.14346 3.5 8.55C3.5 13.97 6.8 15.16 9.94 15.55C9.611 15.89 9.35726 16.2954 9.19531 16.7399C9.03335 17.1844 8.96681 17.6581 9 18.13V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="LinkedIn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6 9H2V21H6V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Navigation</h3>
+                <ul class="footer-links">
+                    <li><a href="#about">Qu'est-ce que l'OpSec?</a></li>
+                    <li><a href="#types">Types d'OpSec</a></li>
+                    <li><a href="#practices">Bonnes pratiques</a></li>
+                    <li><a href="#resources">Ressources</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Ressources</h3>
+                <ul class="footer-links">
+                    <li><a href="https://www.torproject.org/" target="_blank">Tor Project</a></li>
+                    <li><a href="https://signal.org/" target="_blank">Signal</a></li>
+                    <li><a href="https://keepass.info/" target="_blank">KeePass</a></li>
+                    <li><a href="https://protonmail.com/" target="_blank">ProtonMail</a></li>
+                    <li><a href="https://tails.boum.org/" target="_blank">Tails OS</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Légal</h3>
+                <ul class="footer-links">
+                    <li><a href="#" id="tos-btn">Conditions d'utilisation</a></li>
+                    <li><a href="#" id="privacy-btn">Politique de confidentialité</a></li>
+                    <li><a href="#" id="cookies-btn">Cookies</a></li>
+                    <li><a href="#" id="disclaimer-btn">Avertissement</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 OpSec Master. Tous droits réservés.</p>
+            <p>Ce site est à but éducatif seulement.</p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 15L12 9L6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="modal-title">Modal Title</h2>
+            <div id="modal-body">
+                <p>Modal content goes here.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loader
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+
+        // Mobile Navigation
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Back to top button
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('active');
+            } else {
+                backToTopBtn.classList.remove('active');
+            }
+        });
+
+        // FAQ Accordion
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
+                item.classList.toggle('active');
+            });
+        });
+
+        // Scroll animations
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInOnScroll = () => {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', fadeInOnScroll);
+        window.addEventListener('load', fadeInOnScroll);
+
+        // Modal for legal pages
+        const modal = document.createElement('div');
+        modal.id = 'modal';
+        modal.style.display = 'none';
+        modal.style.position = 'fixed';
+        modal.style.zIndex = '1001';
+        modal.style.left = '0';
+        modal.style.top = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.backgroundColor = 'rgba(10, 25, 47, 0.9)';
+        modal.style.overflow = 'auto';
+        modal.style.transition = 'all 0.3s ease';
+
+        const modalContent = document.createElement('div');
+        modalContent.className = 'modal-content';
+        modalContent.style.backgroundColor = 'var(--secondary)';
+        modalContent.style.margin = '5% auto';
+        modalContent.style.padding = '2rem';
+        modalContent.style.border = '1px solid var(--accent)';
+        modalContent.style.width = '80%';
+        modalContent.style.maxWidth = '800px';
+        modalContent.style.borderRadius = '4px';
+        modalContent.style.position = 'relative';
+
+        const closeBtn = document.createElement('span');
+        closeBtn.className = 'close-btn';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.position = 'absolute';
+        closeBtn.style.right = '1rem';
+        closeBtn.style.top = '1rem';
+        closeBtn.style.fontSize = '1.5rem';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.color = 'var(--accent)';
+
+        const modalTitle = document.createElement('h2');
+        modalTitle.id = 'modal-title';
+        modalTitle.style.marginBottom = '1.5rem';
+        modalTitle.style.color = 'var(--accent)';
+
+        const modalBody = document.createElement('div');
+        modalBody.id = 'modal-body';
+        modalBody.style.lineHeight = '1.6';
+        modalBody.style.color = 'var(--text-secondary)';
+
+        modalContent.appendChild(closeBtn);
+        modalContent.appendChild(modalTitle);
+        modalContent.appendChild(modalBody);
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
+
+        // Modal content
+        const modalContents = {
+            tos: {
+                title: "Conditions d'utilisation",
+                content: `
+                    <h3>1. Acceptation des conditions</h3>
+                    <p>En utilisant ce site, vous acceptez ces conditions d'utilisation. Si vous n'êtes pas d'accord avec ces conditions, veuillez ne pas utiliser ce site.</p>
+                    
+                    <h3>2. Utilisation du contenu</h3>
+                    <p>Tout le contenu de ce site est fourni à titre informatif seulement. Nous ne garantissons pas l'exactitude ou l'exhaustivité des informations.</p>
+                    
+                    <h3>3. Responsabilité</h3>
+                    <p>Nous ne sommes pas responsables des dommages résultant de l'utilisation des informations fournies sur ce site. L'utilisation des techniques d'OpSec présentées est à vos propres risques.</p>
+                    
+                    <h3>4. Modifications</h3>
+                    <p>Nous nous réservons le droit de modifier ces conditions à tout moment. Les modifications prendront effet immédiatement après leur publication sur le site.</p>
+                `
+            },
+            privacy: {
+                title: "Politique de confidentialité",
+                content: `
+                    <h3>1. Collecte d'informations</h3>
+                    <p>Ce site ne collecte pas d'informations personnelles identifiables. Nous n'utilisons pas de cookies de suivi ni d'outils d'analyse tiers.</p>
+                    
+                    <h3>2. Vie privée</h3>
+                    <p>Nous respectons votre vie privée. Aucune donnée personnelle n'est collectée, stockée ou partagée avec des tiers.</p>
+                    
+                    <h3>3. Liens externes</h3>
+                    <p>Ce site contient des liens vers des sites tiers. Nous ne sommes pas responsables des pratiques de confidentialité de ces sites.</p>
+                    
+                    <h3>4. Sécurité</h3>
+                    <p>Bien que nous mettions en œuvre des mesures de sécurité raisonnables, veuillez noter qu'aucune transmission sur Internet n'est jamais totalement sécurisée.</p>
+                `
+            },
+            cookies: {
+                title: "Politique relative aux cookies",
+                content: `
+                    <h3>1. Utilisation des cookies</h3>
+                    <p>Ce site n'utilise pas de cookies de suivi. Les seuls cookies qui pourraient être utilisés sont des cookies techniques strictement nécessaires au fonctionnement du site.</p>
+                    
+                    <h3>2. Contrôle des cookies</h3>
+                    <p>Vous pouvez configurer votre navigateur pour refuser tous les cookies. Cependant, certaines fonctionnalités du site pourraient ne pas fonctionner correctement.</p>
+                    
+                    <h3>3. Cookies tiers</h3>
+                    <p>Nous n'autorisons pas de cookies tiers sur ce site.</p>
+                `
+            },
+            disclaimer: {
+                title: "Avertissement",
+                content: `
+                    <h3>1. Avertissement général</h3>
+                    <p>Les informations contenues sur ce site sont fournies à titre éducatif seulement. Nous ne sommes pas responsables de l'utilisation qui pourrait en être faite.</p>
+                    
+                    <h3>2. Exactitude des informations</h3>
+                    <p>Bien que nous nous efforcions de fournir des informations exactes, nous ne pouvons pas garantir qu'elles sont exemptes d'erreurs ou toujours à jour.</p>
+                    
+                    <h3>3. Légalité</h3>
+                    <p>L'utilisation des techniques présentées doit toujours se faire dans le respect des lois en vigueur dans votre juridiction. Nous ne sommes pas responsables des actes illégaux commis par les utilisateurs.</p>
+                    
+                    <h3>4. Sécurité</h3>
+                    <p>La mise en œuvre des techniques d'OpSec présentées ne garantit pas une sécurité absolue. Les menaces évoluent constamment et nécessitent une vigilance continue.</p>
+                `
+            }
+        };
+
+        // Modal functions
+        function openModal(type) {
+            document.getElementById('modal-title').textContent = modalContents[type].title;
+            document.getElementById('modal-body').innerHTML = modalContents[type].content;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Event listeners for modal buttons
+        document.getElementById('tos-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('tos');
+        });
+
+        document.getElementById('privacy-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('privacy');
+        });
+
+        document.getElementById('cookies-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('cookies');
+        });
+
+        document.getElementById('disclaimer-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('disclaimer');
+        });
+
+        closeBtn.addEventListener('click', closeModal);
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Interactive button effect
+        document.querySelectorAll('.interactive-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+                
+                const ripple = document.createElement('span');
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 1000);
+                
+                // Smooth scroll to target if it's an anchor link
+                const href = this.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Tooltip initialization
+        document.querySelectorAll('.tooltip').forEach(tooltip => {
+            tooltip.addEventListener('mouseenter', function() {
+                const tooltipText = this.querySelector('.tooltiptext');
+                tooltipText.style.visibility = 'visible';
+                tooltipText.style.opacity = '1';
+            });
+            
+            tooltip.addEventListener('mouseleave', function() {
+                const tooltipText = this.querySelector('.tooltiptext');
+                tooltipText.style.visibility = 'hidden';
+                tooltipText.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>
